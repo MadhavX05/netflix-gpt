@@ -42,8 +42,6 @@ const GptSearchBar = () => {
       // TODO: Error handling
     }
 
-    // console.log(gptResults.choices?.[0]?.message?.content.split[","]);
-
     const gptMovie = gptResults.choices?.[0]?.message?.content.split[","];
 
     //for each movie I will search TMDB API
@@ -54,7 +52,21 @@ const GptSearchBar = () => {
     // const promiseArray = searchMovieTMDB(searchText.current.value);
     // const TMDBResults = await Promise.resolve(promiseArray);
 
-    console.log(TMDBResults);
+    // console.log(TMDBResults);
+    dispatch(
+      addGptMovieResult({
+        movieNames: gptMovie,
+        movieResults: TMDBResults,
+      })
+    );
+  };
+
+  const handleNormalSearchClick = async () => {
+    const gptMovie = searchText.current.value;
+
+    const promiseArray = searchMovieTMDB(searchText.current.value);
+    const TMDBResults = await Promise.resolve(promiseArray);
+
     dispatch(
       addGptMovieResult({
         movieNames: gptMovie,
@@ -64,27 +76,36 @@ const GptSearchBar = () => {
   };
 
   return (
-    <div className="pt-[15%] flex justify-center">
-      <form
-        className="grid grid-cols-12 w-[55%] bg-transparent"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <input
-          ref={searchText}
-          type="text"
-          name="gptSearch"
-          placeholder={lang[langKey].gptSearchPlaceholder}
-          className="px-8 my-2 col-span-10 rounded-l-full bg-[#111212] bg-opacity-80 placeholder-slate-300 border-y border-l border-slate-300 text-white"
-        />
-        <button
-          className="rounded-r-full border border-[#e50914] col-span-2 my-2 py-4  px-4 bg-[#e50914] font-semibold text-white text-xl"
-          onClick={handleGptSearchClick}
+    <>
+      <div className="pt-[15%] flex justify-center">
+        <form
+          className="grid grid-cols-12 w-[55%] bg-transparent"
+          onSubmit={(e) => e.preventDefault()}
         >
-          <FontAwesomeIcon icon={faSearch} className="mr-2" />
-          {lang[langKey].search}
-        </button>
-      </form>
-    </div>
+          <input
+            ref={searchText}
+            type="text"
+            name="gptSearch"
+            placeholder={lang[langKey].gptSearchPlaceholder}
+            className="px-8 my-2 col-span-10 rounded-l-full bg-[#111212] bg-opacity-80 placeholder-slate-300 border-y border-l border-slate-300 text-white"
+          />
+          <button
+            className="rounded-r-full border border-[#e50914] col-span-2 my-2 py-4  px-4 bg-[#e50914] font-semibold text-white text-xl"
+            onClick={handleNormalSearchClick}
+          >
+            <FontAwesomeIcon icon={faSearch} className="mr-2" />
+            {lang[langKey].search}
+          </button>
+        </form>
+      </div>
+      <div className="flex justify-center w-[55%] mx-auto">
+        <p className="p-2 text-red-600 font-semibold items-center">
+          Access to the ChatGPT features requires admin approval due to paid
+          usage. While awaiting permission, feel free to explore the free search
+          feature.
+        </p>
+      </div>
+    </>
   );
 };
 
